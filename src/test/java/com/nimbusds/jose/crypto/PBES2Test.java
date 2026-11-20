@@ -127,6 +127,8 @@ public class PBES2Test extends TestCase {
 
 		assertEquals(8, PasswordBasedEncrypter.MIN_SALT_LENGTH);
 		assertEquals(1000, PasswordBasedEncrypter.MIN_RECOMMENDED_ITERATION_COUNT);
+
+		assertEquals(1_000_000, PasswordBasedDecrypter.MAX_ALLOWED_ITERATION_COUNT);
 	}
 
 
@@ -274,6 +276,54 @@ public class PBES2Test extends TestCase {
 			fail();
 		} catch (JOSEException e) {
 			assertEquals("Missing JWE p2c header parameter", e.getMessage());
+		}
+	}
+
+
+	public void testPBES2_rejectZero_p2c_equalsMax()
+		throws Exception {
+
+		final String password = "secret";
+		final String plaintext = "Hello world!";
+
+		JWEObject jweObject = new JWEObject(new JWEHeader.Builder(JWEAlgorithm.PBES2_HS256_A128KW, EncryptionMethod.A128GCM).build(), new Payload(plaintext));
+
+		PasswordBasedEncrypter encrypter = new PasswordBasedEncrypter(password, 16, PasswordBasedDecrypter.MAX_ALLOWED_ITERATION_COUNT);
+		encrypter.getJCAContext().setContentEncryptionProvider(BouncyCastleProviderSingleton.getInstance());
+		jweObject.encrypt(encrypter);
+		String jwe = jweObject.serialize();
+
+		jweObject = JWEObject.parse(jwe);
+
+		PasswordBasedDecrypter decrypter = new PasswordBasedDecrypter(password);
+		decrypter.getJCAContext().setContentEncryptionProvider(BouncyCastleProviderSingleton.getInstance());
+		jweObject.decrypt(decrypter);
+		assertEquals(JWEObject.State.DECRYPTED, jweObject.getState());
+	}
+
+
+	public void testPBES2_rejectZero_p2c_greaterThanMax()
+		throws Exception {
+
+		final String password = "secret";
+		final String plaintext = "Hello world!";
+
+		JWEObject jweObject = new JWEObject(new JWEHeader.Builder(JWEAlgorithm.PBES2_HS256_A128KW, EncryptionMethod.A128GCM).build(), new Payload(plaintext));
+
+		PasswordBasedEncrypter encrypter = new PasswordBasedEncrypter(password, 16, PasswordBasedDecrypter.MAX_ALLOWED_ITERATION_COUNT + 1);
+		encrypter.getJCAContext().setContentEncryptionProvider(BouncyCastleProviderSingleton.getInstance());
+		jweObject.encrypt(encrypter);
+		String jwe = jweObject.serialize();
+
+		jweObject = JWEObject.parse(jwe);
+
+		PasswordBasedDecrypter decrypter = new PasswordBasedDecrypter(password);
+		decrypter.getJCAContext().setContentEncryptionProvider(BouncyCastleProviderSingleton.getInstance());
+		try {
+			jweObject.decrypt(decrypter);
+			fail();
+		} catch (JOSEException e) {
+			assertEquals("The JWE p2c header exceeds the maximum allowed 1000000 count", e.getMessage());
 		}
 	}
 }

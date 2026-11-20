@@ -68,6 +68,12 @@ public class PasswordBasedDecrypter extends PasswordBasedCryptoProvider implemen
 
 
 	/**
+	 * The maximum allowed iteration count (1 million).
+	 */
+	public static final int MAX_ALLOWED_ITERATION_COUNT = 1_000_000;
+
+
+	/**
 	 * The critical header policy.
 	 */
 	private final CriticalHeaderParamsDeferral critPolicy = new CriticalHeaderParamsDeferral();
@@ -143,6 +149,10 @@ public class PasswordBasedDecrypter extends PasswordBasedCryptoProvider implemen
 		}
 
 		final int iterationCount = header.getPBES2Count();
+
+		if (iterationCount > MAX_ALLOWED_ITERATION_COUNT) {
+			throw new JOSEException("The JWE p2c header exceeds the maximum allowed " + MAX_ALLOWED_ITERATION_COUNT + " count");
+		}
 
 		critPolicy.ensureHeaderPasses(header);
 
