@@ -1,7 +1,7 @@
 # Licensed under the Apache License, Version 2.0: https://www.apache.org/licenses/LICENSE-2.0
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 9.22.1-osera-00003
+release: 9.22.1-osera-00004
 baseline: v9.22+patch.baseline
 fixes:
   - cve: CVE-2023-52428
@@ -27,12 +27,20 @@ fixes:
     basis: backport
     artifacts:
       - com.nimbusds:nimbus-jose-jwt
-    note: New in this release; ported onto 9.22; fixed at 9.22.1-backpatch-00003 (backpatch-nimbus-jose-jwt@a31c7d0).
+    note: Carried from 9.22.1-backpatch-00003; ported onto 9.22; fixed at 9.22.1-backpatch-00003 (backpatch-nimbus-jose-jwt@a31c7d0).
+  - cve: CVE-2025-53864
+    upstream_fix_url: https://bitbucket.org/connect2id/nimbus-jose-jwt/commits/393a96fd858a5a74276158ca9740b67ca9484b4d
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2025-53864
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-nimbus-jose-jwt/compare/6a278c3~1...6519788
+    basis: adapted
+    artifacts:
+      - com.nimbusds:nimbus-jose-jwt
+    note: "New in this release; ported onto 9.22; fixed at 9.22.1-backpatch-00004 (backpatch-nimbus-jose-jwt@6a278c3..6519788). This release ships upstream's switch, in 9.24, from a shaded json-smart to a shaded Gson, with upstream's later repairs of that switch and its raise to Gson 2.12.1, whose parser refuses JSON nested deeper than 255 levels (upstream commits 74a64ad6, 04bd9c1e, 393a96fd, ed736420, 12494b6e and dbd5de40). The shaded packages com.nimbusds.jose.shaded.json, com.nimbusds.jose.shaded.asm and com.nimbusds.jose.shaded.ow2asm are gone, so code that uses them no longer compiles or links against this release. JSON objects are parsed strictly: unquoted keys or values and trailing commas are refused, and every parse failure reads \"Invalid JSON object\". Parsed numbers are Gson's types, so a whole number in a header or claims set that came back as a Long or Integer now comes back as a Double."
 tests:
-  commit: 0acc30bb414fd5b6804993f3c2c28955abd9345c
+  commit: 4253658962682f4c51569d0564187912da7eb0cd
   command: mvn -B -T1 -Dgpg.skip=true -Dmaven.test.failure.ignore=true clean test
   runtime: openjdk version 11.0.20 2023-07-18 LTS, Apache Maven 3.8.4
-  report: nimbus-jose-jwt-9.22.1-osera-00003-tests.zip
-  report_sha256: 4910ea271c0c915a6be3b652048979a51288b7ca5cbbbd4d89ab9eccb4e5cebe
+  report: nimbus-jose-jwt-9.22.1-osera-00004-tests.zip
+  report_sha256: a60876808184ca10e34f57cbfd886fe73c620b25bc455de1554d1ad272d53368
   result: pass
-  note: 1370 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors. Built and tested on Zulu 11.0.20 with Maven 3.8.4 (Central's 9.22 jar names Build-Jdk 11.0.14.1; upstream CI uses Maven 3.8.1); main classes compiled by the pom's ecj.
+  note: 1389 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors. Built and tested on Zulu 11.0.20 with Maven 3.8.4 (Central's 9.22 jar names Build-Jdk 11.0.14.1; upstream CI uses Maven 3.8.1); main classes compiled by the pom's ecj.
