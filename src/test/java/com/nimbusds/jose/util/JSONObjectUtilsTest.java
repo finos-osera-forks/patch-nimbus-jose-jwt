@@ -46,6 +46,17 @@ public class JSONObjectUtilsTest extends TestCase {
 	}
 
 
+	public void testParseFromNullString() {
+
+		try {
+			JSONObjectUtils.parse(null);
+			fail();
+		} catch (ParseException e) {
+			assertEquals("The JSON object string must not be null", e.getMessage());
+		}
+	}
+	
+	
 	public void testParseTrailingWhiteSpace()
 		throws Exception {
 

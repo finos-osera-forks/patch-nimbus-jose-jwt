@@ -90,6 +90,17 @@ public class JWKSetTest extends TestCase {
 	}
 
 
+	public void testParseNullString() {
+
+		try {
+			JWKSet.parse((String) null);
+			fail();
+		} catch (ParseException e) {
+			assertEquals("The JSON object string must not be null", e.getMessage());
+		}
+	}
+
+
 	public void testParsePublicJWKSet()
 		throws Exception {
 
