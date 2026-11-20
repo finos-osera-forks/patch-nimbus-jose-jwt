@@ -21,7 +21,7 @@ public class JSONObjectUtilsTrailingDataTest extends TestCase {
 			JSONObjectUtils.parse("{\"a\":1}" + SUB);
 			fail();
 		} catch (ParseException e) {
-			assertTrue(e.getMessage().startsWith("Invalid JSON: "));
+			assertEquals("Invalid JSON object", e.getMessage());
 		}
 	}
 
@@ -32,7 +32,7 @@ public class JSONObjectUtilsTrailingDataTest extends TestCase {
 			JSONObjectUtils.parse("{\"a\":1}" + SUB + "garbage");
 			fail();
 		} catch (ParseException e) {
-			assertTrue(e.getMessage().startsWith("Invalid JSON: "));
+			assertEquals("Invalid JSON object", e.getMessage());
 		}
 	}
 

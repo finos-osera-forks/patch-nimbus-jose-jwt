@@ -29,6 +29,7 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.Strictness;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
@@ -45,7 +46,10 @@ public class JSONObjectUtils {
 	/**
 	 * The GSon instance for serialisation and parsing.
 	 */
-	private static final Gson GSON = new GsonBuilder().serializeNulls().create();
+	private static final Gson GSON = new GsonBuilder()
+		.setStrictness(Strictness.STRICT)
+		.serializeNulls()
+		.create();
 
 
 	/**
@@ -122,7 +126,7 @@ public class JSONObjectUtils {
 		try {
 			return GSON.fromJson(s, mapType);
 		} catch (Exception e) {
-			throw new ParseException("Invalid JSON: " + e.getMessage(), 0);
+			throw new ParseException("Invalid JSON object", 0);
 		} catch (StackOverflowError e) {
 			throw new ParseException("Excessive JSON object and / or array nesting", 0);
 		}

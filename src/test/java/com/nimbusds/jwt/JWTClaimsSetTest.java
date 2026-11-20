@@ -1086,7 +1086,7 @@ public class JWTClaimsSetTest extends TestCase {
 			JWTClaimsSet.parse(json);
 			fail();
 		} catch (ParseException e) {
-			assertTrue(e.getMessage().startsWith("Invalid JSON"));
+			assertEquals("Invalid JSON object", e.getMessage());
 		}
 	}
 
@@ -1108,7 +1108,7 @@ public class JWTClaimsSetTest extends TestCase {
 			JWTClaimsSet.parse(json.toString());
 			fail();
 		} catch (ParseException e) {
-			assertTrue(e.getMessage().startsWith("Invalid JSON"));
+			assertEquals("Invalid JSON object", e.getMessage());
 		}
 	}
 

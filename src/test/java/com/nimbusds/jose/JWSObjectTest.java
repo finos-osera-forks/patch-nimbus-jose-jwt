@@ -179,7 +179,7 @@ public class JWSObjectTest extends TestCase {
 			JWSObject.parse(jws);
 			fail();
 		} catch (ParseException e) {
-			assertTrue(e.getMessage().startsWith("Invalid JWS header: Invalid JSON: "));
+			assertEquals("Invalid JWS header: Invalid JSON object", e.getMessage());
 		}
 	}
 	
