@@ -1,7 +1,7 @@
 # Licensed under the Apache License, Version 2.0: https://www.apache.org/licenses/LICENSE-2.0
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 9.22.1-osera-00001
+release: 9.22.1-osera-00002
 baseline: v9.22+patch.baseline
 fixes:
   - cve: CVE-2023-52428
@@ -11,12 +11,20 @@ fixes:
     basis: adapted
     artifacts:
       - com.nimbusds:nimbus-jose-jwt
-    note: New in this release; ported onto 9.22; fixed at 9.22.1-backpatch-00001 (backpatch-nimbus-jose-jwt@2a32d18).
+    note: Carried from 9.22.1-backpatch-00001; ported onto 9.22; fixed at 9.22.1-backpatch-00001 (backpatch-nimbus-jose-jwt@2a32d18).
+  - cve: CVE-2023-1370
+    upstream_fix_url: https://github.com/netplex/json-smart-v2/compare/2.4.8...2.4.11
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2023-1370
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-nimbus-jose-jwt/commit/ca91a76
+    basis: backport
+    artifacts:
+      - com.nimbusds:nimbus-jose-jwt
+    note: New in this release; ported onto 9.22; fixed at 9.22.1-backpatch-00002 (backpatch-nimbus-jose-jwt@ca91a76).
 tests:
-  commit: bae3b654e56e6cb1c7862bbbb9cd4c889bec16cd
+  commit: 097746ccc88cd9889a1e2881dec706e8607be162
   command: mvn -B -T1 -Dgpg.skip=true -Dmaven.test.failure.ignore=true clean test
   runtime: openjdk version 11.0.20 2023-07-18 LTS, Apache Maven 3.8.4
-  report: nimbus-jose-jwt-9.22.1-osera-00001-tests.zip
-  report_sha256: beb01ec771c8871cf0e3e32df8d93578d6d4c17cbfea7dfcf38874f5db38bc14
+  report: nimbus-jose-jwt-9.22.1-osera-00002-tests.zip
+  report_sha256: 1cd37d0610c184d0e4126a6ecc62d94c549c2675122b9529bc7712566a770fbf
   result: pass
-  note: 1365 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors. Built and tested on Zulu 11.0.20 with Maven 3.8.4 (Central's 9.22 jar names Build-Jdk 11.0.14.1; upstream CI uses Maven 3.8.1); main classes compiled by the pom's ecj.
+  note: 1367 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors. Built and tested on Zulu 11.0.20 with Maven 3.8.4 (Central's 9.22 jar names Build-Jdk 11.0.14.1; upstream CI uses Maven 3.8.1); main classes compiled by the pom's ecj.
