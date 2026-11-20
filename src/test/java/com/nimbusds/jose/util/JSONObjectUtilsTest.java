@@ -74,7 +74,7 @@ public class JSONObjectUtilsTest extends TestCase {
 		try {
 			JSONObjectUtils.parse("{}a");
 		} catch (ParseException e) {
-			assertTrue(e.getMessage().startsWith("Invalid JSON:"));
+			assertEquals("Invalid JSON object", e.getMessage());
 		}
 	}
 	
@@ -86,10 +86,13 @@ public class JSONObjectUtilsTest extends TestCase {
 		
 		String json = "{\"key\":2e+}";
 		
-		Map<String, Object> jsonObject = JSONObjectUtils.parse(json);
-		
-		assertEquals("2e+", jsonObject.get("key"));
-		assertEquals(1, jsonObject.size());
+		// 2024-11-14: With strict GSon parsing we get an exception now
+		try {
+			JSONObjectUtils.parse(json);
+			fail();
+		} catch (ParseException e) {
+			assertEquals("Invalid JSON object", e.getMessage());
+		}
 	}
 	
 	
@@ -105,7 +108,7 @@ public class JSONObjectUtilsTest extends TestCase {
 			JSONObjectUtils.parse(sb.toString());
 			fail();
 		} catch (ParseException e) {
-			assertTrue(e.getMessage().startsWith("Invalid JSON:"));
+			assertEquals("Invalid JSON object", e.getMessage());
 		}
 	}
 	
@@ -847,7 +850,72 @@ public class JSONObjectUtilsTest extends TestCase {
 			JSONObjectUtils.parse(json);
 			fail();
 		} catch (ParseException e) {
-			assertTrue(e.getMessage().startsWith("Invalid JSON"));
+			assertEquals("Invalid JSON object", e.getMessage());
+		}
+	}
+
+
+	public void testParseNonStrictJSONObject_unescapedKey() {
+
+		String json = "{key1:\"value1\"}";
+
+		try {
+			JSONObjectUtils.parse(json);
+			fail();
+		} catch (ParseException e) {
+			assertEquals("Invalid JSON object", e.getMessage());
+		}
+	}
+
+
+	public void testParseNonStrictJSONObject_unescapedValue() {
+
+		String json = "{\"key1\":value1}";
+
+		try {
+			JSONObjectUtils.parse(json);
+			fail();
+		} catch (ParseException e) {
+			assertEquals("Invalid JSON object", e.getMessage());
+		}
+	}
+
+
+	public void testParseNonStrictJSONObject_unescapedKeyAndValue() {
+
+		String json = "{key1:value1}";
+
+		try {
+			JSONObjectUtils.parse(json);
+			fail();
+		} catch (ParseException e) {
+			assertEquals("Invalid JSON object", e.getMessage());
+		}
+	}
+
+
+	public void testParseNonStrictJSONObject_trailingComma() {
+
+		String json = "{\"key1\":\"value1\",}";
+
+		try {
+			JSONObjectUtils.parse(json);
+			fail();
+		} catch (ParseException e) {
+			assertEquals("Invalid JSON object", e.getMessage());
+		}
+	}
+
+
+	public void testParseNonStrictJSONObject_jwkSet() {
+
+		String json = "{keys: [{kty: RSA, e: AQAB, kid: eee9f17a3b598fd86417a980b591fbe6, alg: RS384, n: wJq2RHIA-7RT6q4go7wjcbHdW7ck7Kz22A8wf-kN7Wi5CWvhFG2_Y7nQp1lDpb2IKMQr }]}";
+
+		try {
+			JSONObjectUtils.parse(json);
+			fail();
+		} catch (ParseException e) {
+			assertEquals("Invalid JSON object", e.getMessage());
 		}
 	}
 }

@@ -486,4 +486,14 @@ public class JWKTest extends TestCase {
 			assertEquals("Missing key type \"kty\" parameter", e.getMessage());
 		}
 	}
+
+
+	public void testNonCompliantJSON() {
+		try {
+			JWKSet.parse("{keys: [{kty: RSA, e: AQAB, kid: eee9f17a3b598fd86417a980b591fbe6, alg: RS384, n: wJq2RHIA-7RT6q4go7wjcbHdW7ck7Kz22A8wf-kN7Wi5CWvhFG2_Y7nQp1lDpb2IKMQr }]}");
+			fail();
+		} catch (ParseException e) {
+			assertEquals("Invalid JSON object", e.getMessage());
+		}
+	}
 }
