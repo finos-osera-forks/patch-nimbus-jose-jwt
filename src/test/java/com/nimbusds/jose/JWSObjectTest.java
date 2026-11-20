@@ -178,7 +178,7 @@ public class JWSObjectTest extends TestCase {
 			JWSObject.parse(jws);
 			fail();
 		} catch (ParseException e) {
-			assertEquals("Invalid JWS header: Excessive JSON object and / or array nesting", e.getMessage());
+			assertEquals("Invalid JWS header: Invalid JSON: Malicious payload, having non natural depths, parsing stoped on [ at position 404.", e.getMessage());
 		}
 	}
 	

@@ -75,7 +75,7 @@ public class JSONObjectUtilsTest extends TestCase {
 			JSONObjectUtils.parse(sb.toString());
 			fail();
 		} catch (ParseException e) {
-			assertEquals("Excessive JSON object and / or array nesting", e.getMessage());
+			assertEquals("Invalid JSON: Malicious payload, having non natural depths, parsing stoped on [ at position 404.", e.getMessage());
 		}
 	}
 	
