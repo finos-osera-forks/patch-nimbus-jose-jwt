@@ -1,0 +1,5 @@
+# Licensed under the Apache License, Version 2.0: https://www.apache.org/licenses/LICENSE-2.0
+line: nimbus-jose-jwt-9.22
+repository: patch-nimbus-jose-jwt
+members:
+  - com.nimbusds:nimbus-jose-jwt
