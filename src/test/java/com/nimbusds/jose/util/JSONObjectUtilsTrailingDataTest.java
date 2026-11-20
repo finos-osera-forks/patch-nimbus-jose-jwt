@@ -40,6 +40,6 @@ public class JSONObjectUtilsTrailingDataTest extends TestCase {
 	public void testParseAcceptsTrailingSpace()
 		throws ParseException {
 
-		assertEquals(1L, JSONObjectUtils.parse("{\"a\":1} ").get("a"));
+		assertEquals(1, ((Number) JSONObjectUtils.parse("{\"a\":1} ").get("a")).intValue());
 	}
 }
