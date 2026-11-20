@@ -35,6 +35,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.util.Base64URL;
+import com.nimbusds.jose.util.JSONObjectUtilsTest;
 
 
 public class SignedJWTTest extends TestCase {
@@ -200,6 +201,32 @@ public class SignedJWTTest extends TestCase {
 		
 		try {
 			jwt.getJWTClaimsSet();
+			fail();
+		} catch (ParseException e) {
+			assertEquals("Payload of JWS object is not a valid JSON object", e.getMessage());
+		}
+	}
+
+
+	public void testParseWithExcessiveNesting()
+		throws Exception {
+
+		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+		kpg.initialize(2048);
+		KeyPair kp = kpg.genKeyPair();
+
+		JWSObject jwsObject = new JWSObject(
+			new JWSHeader(JWSAlgorithm.RS256),
+			new Payload(JSONObjectUtilsTest.createJSONObjectWithNesting(255))
+		);
+
+		jwsObject.sign(new RSASSASigner(kp.getPrivate()));
+
+		String jwtString = jwsObject.serialize();
+
+		SignedJWT signedJWT = SignedJWT.parse(jwtString);
+		try {
+			signedJWT.getJWTClaimsSet();
 			fail();
 		} catch (ParseException e) {
 			assertEquals("Payload of JWS object is not a valid JSON object", e.getMessage());
