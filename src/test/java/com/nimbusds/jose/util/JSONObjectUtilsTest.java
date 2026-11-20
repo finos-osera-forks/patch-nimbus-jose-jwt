@@ -18,6 +18,8 @@
 package com.nimbusds.jose.util;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -25,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.stream.JsonReader;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
@@ -803,5 +806,48 @@ public class JSONObjectUtilsTest extends TestCase {
 		
 		Map<String, Object> jsonObject = JSONObjectUtils.newJSONObject();
 		assertNull(JSONObjectUtils.getBase64URL(jsonObject, HeaderParameterNames.X_509_CERT_SHA_1_THUMBPRINT));
+	}
+
+
+	public static Map<String, Object> createJSONObjectWithNesting(int depth) {
+		Map<String, Object> jsonObject = JSONObjectUtils.newJSONObject();
+		Map<String, Object> ref = jsonObject;
+		for (int i=0; i < depth; i++) {
+			Map<String, Object> nested = JSONObjectUtils.newJSONObject();
+			ref.put("a", nested);
+			ref = nested;
+		}
+		return jsonObject;
+	}
+
+
+	public void testParseWithMaxJSONObjectNesting()
+		throws ParseException {
+
+		JsonReader jsonReader = new JsonReader(new InputStreamReader(new ByteArrayInputStream(new byte[]{})));
+		int nestingLimit = jsonReader.getNestingLimit();
+		assertEquals(255, nestingLimit);
+
+		Map<String, Object> jsonObject = createJSONObjectWithNesting(nestingLimit - 1);
+		String json = JSONObjectUtils.toJSONString(jsonObject);
+		assertEquals(jsonObject, JSONObjectUtils.parse(json));
+	}
+
+
+	public void testParseWithExcessiveJSONObjectNesting() {
+
+		JsonReader jsonReader = new JsonReader(new InputStreamReader(new ByteArrayInputStream(new byte[]{})));
+		int nestingLimit = jsonReader.getNestingLimit();
+		assertEquals(255, nestingLimit);
+
+		Map<String, Object> jsonObject = createJSONObjectWithNesting(nestingLimit);
+		String json = JSONObjectUtils.toJSONString(jsonObject);
+
+		try {
+			JSONObjectUtils.parse(json);
+			fail();
+		} catch (ParseException e) {
+			assertTrue(e.getMessage().startsWith("Invalid JSON"));
+		}
 	}
 }
