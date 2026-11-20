@@ -1,0 +1,21 @@
+schema: osera-patch-evidence/0.1.0
+producer: moderne
+release: 9.22.1-backpatch-00001
+baseline: v9.22+backpatch.baseline
+fixes:
+  - cve: CVE-2023-52428
+    upstream_fix_url: https://bitbucket.org/connect2id/nimbus-jose-jwt/commits/3b3b77ec5ec4b16c3fe12d4977c683db845ffde3
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2023-52428
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-nimbus-jose-jwt/commit/2a32d18
+    basis: adapted
+    artifacts:
+      - com.nimbusds:nimbus-jose-jwt
+    note: New in this release; ported onto 9.22; fixed at 9.22.1-backpatch-00001 (backpatch-nimbus-jose-jwt@2a32d18).
+tests:
+  commit: 2a32d18838f77f0ea800d9da42f9c73630961589
+  command: mvn -B -T1 -Dgpg.skip=true -Dmaven.test.failure.ignore=true clean test
+  runtime: openjdk version 11.0.20 2023-07-18 LTS, Apache Maven 3.8.4
+  report: nimbus-jose-jwt-9.22.1-backpatch-00001-tests.zip
+  report_sha256: beb01ec771c8871cf0e3e32df8d93578d6d4c17cbfea7dfcf38874f5db38bc14
+  result: pass
+  note: 1365 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors. Built and tested on Zulu 11.0.20 with Maven 3.8.4 (Central's 9.22 jar names Build-Jdk 11.0.14.1; upstream CI uses Maven 3.8.1); main classes compiled by the pom's ecj.
